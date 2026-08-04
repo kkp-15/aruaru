@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>アルアル｜家の酒在庫かんたん管理｜無料・登録不要</title>
+<meta name="description" content="家にあるお酒の在庫をタップだけで管理できる無料アプリ。ビール・チューハイ・日本酒・ワインなどを本数で記録し、買い足しラインを下回ると自動で買い物リストに。登録不要、記録は端末内だけに保存。">
+<meta name="theme-color" content="#f59d0e">
+<link rel="canonical" href="https://aruaru.kkpwebninja.com/">
+<!-- WEBNINJA_UNIFIED_FAVICON -->
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<meta property="og:title" content="アルアル｜家の酒在庫かんたん管理">
+<meta property="og:description" content="家のお酒をタップで在庫管理。減ってきたら自動で買い物リストに。無料・登録不要">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aruaru.kkpwebninja.com/">
+<meta property="og:site_name" content="アルアル">
+<meta property="og:image" content="https://aruaru.kkpwebninja.com/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://aruaru.kkpwebninja.com/ogp.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "アルアル",
+  "url": "https://aruaru.kkpwebninja.com/",
+  "description": "家にあるお酒の在庫を本数で管理し、買い足しラインを下回ると買い物リストへ自動で移す無料のWebアプリ。登録不要で、記録は端末内にのみ保存されます。",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Web",
+  "offers": {"@type":"Offer","price":"0","priceCurrency":"JPY"},
+  "author": {"@type":"Organization","name":"web忍者の砦"}
+}
+</script>
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2LM85GJN0L"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-2LM85GJN0L');
+</script>
+
+<!-- AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1298304917726270" crossorigin="anonymous"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf6ee;           /* 明るいクリーム（ビールの泡） */
+  --bg2:#f3ecdd;
+  --card:#ffffff;
+  --line:#e8dfcd;
+  --wood:#d9c9a8;         /* 明るい木の棚 */
+  --amber:#f59d0e;        /* 注ぎたてのビール */
+  --amber-deep:#d97e04;
+  --amber-soft:#fdf3e0;
+  --beer-grad:linear-gradient(180deg,#ffc93c 0%,#f59d0e 55%,#e07f06 100%);
+  --ink:#3a3126;
+  --sub:#9b8d78;
+  --alert:#e05d3b;
+  --alert-soft:#fdeae4;
+  --ok:#5da05a;
+  --r:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-size:16px}
+body{
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  background:
+    radial-gradient(ellipse 120% 40% at 50% -5%, rgba(232,148,15,.12), transparent 60%),
+    var(--bg);
+  color:var(--ink);
+  min-height:100dvh;
+  padding-bottom:calc(92px + env(safe-area-inset-bottom));
+}
+.wrap{max-width:520px;margin:0 auto;padding:0 16px}
+
+/* ---------- header ---------- */
+header{padding:20px 0 4px;text-align:center}
+.hero{display:flex;align-items:center;justify-content:center;gap:14px}
+.logo{font-family:'Zen Maru Gothic';font-weight:900;font-size:2.1rem;letter-spacing:.06em;color:var(--ink);line-height:1.15}
+.logo b{background:var(--beer-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tagline{font-size:.78rem;color:var(--sub);letter-spacing:.08em;margin-top:4px}
+
+/* CSSビールジョッキ */
+.mug{position:relative;width:52px;height:64px;flex:0 0 auto}
+.mug .glass{
+  position:absolute;left:0;top:8px;width:44px;height:54px;border-radius:6px 6px 10px 10px;
+  border:3px solid #cdbfa5;background:var(--beer-grad);overflow:hidden;
+  box-shadow:inset -6px 0 8px rgba(255,255,255,.35), 0 4px 10px rgba(224,127,6,.3);
+}
+.mug .handle{
+  position:absolute;right:0;top:20px;width:16px;height:26px;
+  border:3px solid #cdbfa5;border-left:none;border-radius:0 10px 10px 0;
+}
+.mug .foamcap{
+  position:absolute;left:-3px;top:0;width:50px;height:16px;
+  background:#fffdf6;border-radius:10px;
+  box-shadow:0 2px 4px rgba(58,49,38,.12), inset 0 -3px 4px rgba(232,148,15,.15);
+}
+.mug .bub{
+  position:absolute;bottom:-6px;width:5px;height:5px;border-radius:50%;
+  background:rgba(255,255,255,.75);animation:rise 2.6s linear infinite;
+}
+.mug .bub:nth-child(2){left:8px;animation-delay:0s}
+.mug .bub:nth-child(3){left:19px;width:4px;height:4px;animation-delay:.9s}
+.mug .bub:nth-child(4){left:30px;animation-delay:1.7s}
+@keyframes rise{from{transform:translateY(0);opacity:0}15%{opacity:1}to{transform:translateY(-46px);opacity:0}}
+@media (prefers-reduced-motion: reduce){.mug .bub{animation:none;display:none}}
+
+/* ---------- summary ---------- */
+.summary{display:flex;gap:8px;margin:12px 0}
+.sumbox{
+  flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:9px 6px;text-align:center;box-shadow:0 2px 8px rgba(58,49,38,.05);
+}
+.sumbox .num{font-family:'Zen Maru Gothic';font-weight:900;font-size:1.4rem;line-height:1.1;color:var(--ink)}
+.sumbox .num.alert{color:var(--alert)}
+.sumbox .lbl{font-size:.66rem;color:var(--sub);margin-top:2px}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tab{
+  flex:1;text-align:center;padding:11px 0;border-radius:999px;font-size:.88rem;font-weight:700;
+  background:var(--card);border:1px solid var(--line);color:var(--sub);cursor:pointer;user-select:none;
+}
+.tab.on{background:var(--amber);border-color:var(--amber);color:#fff}
+.tab .badge{
+  display:inline-block;min-width:18px;padding:0 5px;margin-left:4px;border-radius:999px;
+  background:var(--alert);color:#fff;font-size:.7rem;line-height:18px;vertical-align:2px;
+}
+
+/* ---------- guide ---------- */
+.guide{
+  background:var(--card);border:1.5px solid var(--amber);border-radius:20px;
+  padding:22px 18px;margin-bottom:14px;box-shadow:0 4px 16px rgba(232,148,15,.12);
+}
+.guide h2{
+  font-family:'Zen Maru Gothic';font-weight:900;font-size:1.15rem;color:var(--ink);
+  text-align:center;margin-bottom:16px;
+}
+.gsteps{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+.gstep{display:flex;align-items:center;gap:12px}
+.gstep .gicon{
+  flex:0 0 46px;height:46px;border-radius:14px;background:var(--amber-soft);
+  display:flex;align-items:center;justify-content:center;font-size:1.4rem;
+}
+.gstep .gtxt{font-size:.88rem;line-height:1.55}
+.gstep .gtxt b{color:var(--amber-deep)}
+.gbtns{display:flex;gap:10px}
+.gbtns button{
+  flex:1;height:48px;border-radius:12px;font-family:'Zen Maru Gothic';font-weight:700;font-size:.92rem;cursor:pointer;
+}
+.gb-sample{border:1.5px solid var(--amber);background:var(--amber-soft);color:var(--amber-deep)}
+.gb-start{border:none;background:var(--amber);color:#fff}
+
+/* ---------- chips ---------- */
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;padding:8px 14px;border-radius:999px;font-size:.82rem;font-weight:500;
+  background:var(--card);border:1px solid var(--line);color:var(--sub);cursor:pointer;white-space:nowrap;
+}
+.chip.on{border-color:var(--amber);color:var(--amber-deep);background:var(--amber-soft)}
+
+/* ---------- item card ---------- */
+.list{display:flex;flex-direction:column;gap:12px}
+.item{
+  position:relative;display:flex;align-items:center;gap:12px;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:14px 14px 16px;border-bottom:4px solid var(--wood);
+  box-shadow:0 2px 8px rgba(58,49,38,.05);
+}
+.item.low{border-color:rgba(224,93,59,.4);border-bottom-color:var(--alert);background:linear-gradient(0deg, var(--alert-soft), var(--card) 45%)}
+.bemoji{
+  flex:0 0 48px;height:48px;border-radius:14px;background:var(--bg2);
+  display:flex;align-items:center;justify-content:center;font-size:1.5rem;
+}
+.iteminfo{flex:1;min-width:0;cursor:pointer}
+.iteminfo .name{
+  font-weight:700;font-size:.95rem;color:var(--ink);line-height:1.35;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.samplebar{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:var(--amber-soft);border:1px dashed var(--amber);border-radius:12px;
+  padding:9px 12px;margin-bottom:12px;font-size:.76rem;color:var(--amber-deep);font-weight:700;
+}
+.samplebar button{
+  border:1px solid var(--amber);background:#fff;color:var(--amber-deep);
+  border-radius:999px;padding:6px 12px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;
+}
+.iteminfo .meta{font-size:.72rem;color:var(--sub);margin-top:3px;display:flex;align-items:center;gap:8px}
+.editbtn{
+  border:1px solid var(--line);background:var(--bg);color:var(--sub);
+  border-radius:999px;padding:3px 9px;font-size:.68rem;cursor:pointer;font-family:inherit;
+}
+.editbtn:active{border-color:var(--amber);color:var(--amber-deep)}
+.gauge{height:8px;border-radius:999px;background:var(--bg2);margin-top:8px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(58,49,38,.08)}
+.gauge i{
+  display:block;height:100%;border-radius:999px;
+  background:linear-gradient(90deg,#e07f06,#f59d0e 60%,#ffc93c);
+  border-right:3px solid #fffdf6;
+  transition:width .35s ease;
+}
+.item.low .gauge i{background:var(--alert)}
+@media (prefers-reduced-motion: reduce){.gauge i{transition:none}}
+.lowtag{
+  position:absolute;top:-9px;right:12px;background:var(--alert);color:#fff;
+  font-size:.66rem;font-weight:700;padding:2px 9px;border-radius:999px;
+}
+.actions{display:flex;flex-direction:column;align-items:center}
+.actrow{display:flex;align-items:center;gap:6px}
+.act{
+  width:56px;height:44px;border-radius:12px;border:1px solid var(--line);
+  background:var(--bg);cursor:pointer;font-family:inherit;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink);
+}
+.act .sym{font-size:1.05rem;font-weight:900;line-height:1}
+.act .word{font-size:.6rem;color:var(--sub);line-height:1.3}
+.act:active{background:var(--amber);border-color:var(--amber)}
+.act:active .word,.act:active .sym{color:#fff}
+.count{min-width:46px;text-align:center;font-family:'Zen Maru Gothic';font-weight:900;font-size:1.5rem;color:var(--ink)}
+.count small{font-size:.62rem;font-weight:700;color:var(--sub);display:block;line-height:1}
+.item.low .count{color:var(--alert)}
+
+/* ---------- empty / shopping ---------- */
+.empty{text-align:center;color:var(--sub);padding:48px 20px;font-size:.9rem;line-height:1.9}
+.empty .big{font-size:2.4rem;margin-bottom:6px}
+.shophint{font-size:.75rem;color:var(--sub);text-align:center;margin-bottom:12px;line-height:1.7}
+.readhead{
+  font-family:'Zen Maru Gothic';font-weight:700;font-size:.95rem;color:var(--ink);
+  margin:4px 0 10px;padding-left:2px;
+}
+.readlist{display:flex;flex-direction:column;gap:10px}
+.readcard{
+  display:flex;align-items:center;gap:12px;text-decoration:none;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:13px 14px;box-shadow:0 2px 8px rgba(58,49,38,.05);
+}
+.readcard:active{border-color:var(--amber);background:var(--amber-soft)}
+.readcard .re{
+  flex:0 0 40px;height:40px;border-radius:12px;background:var(--bg2);
+  display:flex;align-items:center;justify-content:center;font-size:1.25rem;
+}
+.readcard .rt{flex:1;font-size:.85rem;font-weight:500;color:var(--ink);line-height:1.5}
+.readcard .ra{color:var(--sub);font-size:1.2rem}
+.shopitem{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:14px;border-bottom:4px solid var(--wood);box-shadow:0 2px 8px rgba(58,49,38,.05);
+}
+.shoptop{display:flex;align-items:center;gap:12px}
+.shopitem .name{font-weight:700;color:var(--ink)}
+.shopitem .need{font-size:.78rem;color:var(--amber-deep);margin-top:2px}
+.shopbtns{display:flex;gap:8px;margin-top:12px}
+.shopbtns a,.shopbtns button{
+  flex:1;height:42px;border-radius:11px;font-weight:700;font-size:.8rem;cursor:pointer;
+  font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;
+  text-decoration:none;
+}
+.buy-amazon{border:1px solid #e8b26b;background:#fff7ea;color:#9a6400}
+.buy-rakuten{border:1px solid #e79a9a;background:#fdf0f0;color:#a83232}
+.bought{border:none;background:var(--amber);color:#fff}
+
+/* ---------- FAB ---------- */
+.fab{
+  position:fixed;left:0;right:0;bottom:0;
+  padding:12px 16px calc(14px + env(safe-area-inset-bottom));
+  background:linear-gradient(transparent, rgba(250,246,238,.95) 40%);
+  display:flex;justify-content:center;pointer-events:none;z-index:10;
+}
+.fab button{
+  pointer-events:auto;width:100%;max-width:488px;height:56px;border-radius:999px;border:none;
+  background:var(--beer-grad);color:#fff;font-family:'Zen Maru Gothic';font-weight:900;font-size:1.05rem;
+  letter-spacing:.08em;cursor:pointer;box-shadow:0 6px 20px rgba(232,148,15,.4);
+  text-shadow:0 1px 2px rgba(160,90,0,.3);
+}
+.fab button:active{background:var(--amber-deep)}
+
+/* ---------- modal ---------- */
+.overlay{position:fixed;inset:0;background:rgba(58,49,38,.4);display:none;align-items:flex-end;justify-content:center;z-index:50}
+.overlay.show{display:flex}
+.sheet{
+  width:100%;max-width:520px;background:var(--bg);border-radius:22px 22px 0 0;
+  padding:22px 20px calc(24px + env(safe-area-inset-bottom));animation:up .22s ease;
+  max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion: reduce){.sheet{animation:none}}
+.sheet h2{font-family:'Zen Maru Gothic';font-weight:700;font-size:1.1rem;margin-bottom:16px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.75rem;color:var(--sub);margin-bottom:6px}
+.field input{
+  width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);
+  background:var(--card);color:var(--ink);font-size:1rem;font-family:inherit;
+}
+.field input:focus{outline:2px solid var(--amber);outline-offset:-1px}
+.field .hint{font-size:.7rem;color:var(--sub);margin-top:5px;line-height:1.5}
+.catgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.catbtn{
+  padding:10px 4px;border-radius:12px;border:1px solid var(--line);background:var(--card);
+  color:var(--sub);font-size:.74rem;cursor:pointer;text-align:center;font-family:inherit;line-height:1.4;
+}
+.catbtn .ce{font-size:1.3rem;display:block}
+.catbtn.on{border-color:var(--amber);color:var(--amber-deep);background:var(--amber-soft)}
+.row2{display:flex;gap:10px}
+.row2 .field{flex:1}
+.sheetbtns{display:flex;gap:10px;margin-top:8px}
+.sheetbtns button{flex:1;height:48px;border-radius:12px;font-weight:700;font-size:.95rem;cursor:pointer;font-family:inherit}
+.btn-save{border:none;background:var(--amber);color:#fff}
+.btn-cancel{border:1px solid var(--line);background:var(--card);color:var(--sub)}
+.btn-del{border:1px solid rgba(224,93,59,.5);background:transparent;color:var(--alert);margin-top:10px;width:100%;height:44px;border-radius:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-del.armed{background:var(--alert);color:#fff;border-color:var(--alert)}
+.qtyname{font-size:.85rem;color:var(--sub);margin:-8px 0 14px;font-weight:500}
+.qtychips{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+.qtychip{
+  padding:12px 0;border-radius:12px;border:1px solid var(--line);background:var(--card);
+  color:var(--ink);font-family:'Zen Maru Gothic';font-weight:700;font-size:.95rem;cursor:pointer;
+}
+.qtychip.on{border-color:var(--amber);background:var(--amber-soft);color:var(--amber-deep)}
+.adv{margin:2px 0 14px}
+.adv summary{
+  list-style:none;cursor:pointer;font-size:.8rem;font-weight:700;color:var(--sub);
+  padding:10px 12px;border:1px dashed var(--line);border-radius:12px;user-select:none;
+}
+.adv summary::-webkit-details-marker{display:none}
+.adv[open] summary{color:var(--amber-deep);border-color:var(--amber);background:var(--amber-soft)}
+.advin{padding-top:14px}
+.errmsg{font-size:.74rem;color:var(--alert);font-weight:700;margin-top:6px}
+.inputerr{border-color:var(--alert) !important}
+.undobar{
+  position:fixed;left:16px;right:16px;bottom:calc(88px + env(safe-area-inset-bottom));
+  max-width:488px;margin:0 auto;z-index:40;
+  background:#3a3126;color:#f5edd8;border-radius:14px;
+  padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  font-size:.84rem;box-shadow:0 8px 24px rgba(58,49,38,.35);
+  opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .2s, transform .2s;
+}
+.undobar.show{opacity:1;pointer-events:auto;transform:none}
+.undobar button{
+  border:none;background:transparent;color:#ffc93c;font-weight:900;font-size:.86rem;
+  cursor:pointer;font-family:'Zen Maru Gothic';white-space:nowrap;padding:4px 6px;
+}
+@media (prefers-reduced-motion: reduce){.undobar{transition:none}}
+.memoline{font-size:.72rem;color:var(--amber-deep);margin-top:3px}
+.totalvalue{font-size:.72rem;color:var(--sub);text-align:center;margin:-6px 0 10px}
+.totalvalue b{color:var(--ink)}
+.disclosure{font-size:.65rem;color:var(--sub);text-align:center;margin-top:14px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="hero">
+      <div class="mug">
+        <div class="glass"><span class="bub"></span><span class="bub"></span><span class="bub"></span></div>
+        <div class="handle"></div>
+        <div class="foamcap"></div>
+      </div>
+      <div>
+        <div class="logo">アル<b>アル</b></div>
+        <div class="tagline">今夜の一杯、ちゃんとある？</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="summary">
+    <div class="sumbox"><div class="num" id="sumTotal">0</div><div class="lbl">🍺 いま飲める</div></div>
+    <div class="sumbox"><div class="num" id="sumKinds">0</div><div class="lbl">🍾 銘柄</div></div>
+    <div class="sumbox"><div class="num" id="sumLow">0</div><div class="lbl">🥂 買い足し</div></div>
+  </div>
+  <div class="totalvalue" id="totalValue" style="display:none"></div>
+
+  <div class="tabs">
+    <div class="tab on" id="tabStock" onclick="setTab('stock')">🍺 在庫</div>
+    <div class="tab" id="tabShop" onclick="setTab('shop')">🛒 買い物リスト<span class="badge" id="shopBadge" style="display:none">0</span></div>
+  </div>
+
+  <div id="viewStock">
+    <div id="guideArea"></div>
+    <div class="chips" id="chips"></div>
+    <div class="list" id="list"></div>
+  </div>
+
+  <div id="viewShop" style="display:none">
+    <div class="shophint">在庫が「買い足しライン」を下回ると、ここに自動で並びます。<br>そのままネットで注文もできます。</div>
+    <div class="list" id="shopList"></div>
+    <div class="disclosure" id="disclosure" style="display:none">※ 商品リンクにはアフィリエイト広告を含みます</div>
+  </div>
+</div>
+
+<div class="fab" id="fabWrap"><button onclick="openAdd()">＋ お酒を登録する</button></div>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeSheet()">
+  <div class="sheet">
+    <h2 id="sheetTitle">お酒を登録</h2>
+    <div class="field">
+      <label>名前（銘柄など）</label>
+      <input id="fName" placeholder="例：スーパードライ 350ml（空欄でもOK）" maxlength="40">
+    </div>
+    <div class="field">
+      <label>カテゴリ</label>
+      <div class="catgrid" id="catGrid"></div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>今の本数</label>
+        <input id="fCount" type="number" inputmode="numeric" min="0" max="999" value="6">
+      </div>
+      <div class="field">
+        <label>買い足しライン</label>
+        <input id="fThreshold" type="number" inputmode="numeric" min="0" max="99" value="2">
+        <div class="hint">この本数以下で🛒買い物リスト行き。0＝なくなったら通知 ／ 空欄＝通知しない</div>
+      </div>
+    </div>
+    <details class="adv" id="advBox">
+      <summary>▸ 詳細設定（お好みで）</summary>
+      <div class="advin">
+        <div class="row2">
+          <div class="field">
+            <label>満タン本数</label>
+            <input id="fTarget" type="number" inputmode="numeric" min="1" max="999" placeholder="自動">
+            <div class="hint">残量ゲージと「あと◯本で安心」の基準。空欄なら自動計算</div>
+          </div>
+          <div class="field">
+            <label>1本あたりの価格（円）</label>
+            <input id="fPrice" type="number" inputmode="numeric" min="0" max="999999" placeholder="未設定">
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>容量（ml）</label>
+            <input id="fVol" type="number" inputmode="numeric" min="0" max="99999" placeholder="例: 350">
+          </div>
+          <div class="field">
+            <label>度数（%）</label>
+            <input id="fAbv" type="number" inputmode="decimal" min="0" max="99" step="0.5" placeholder="例: 5">
+          </div>
+        </div>
+        <div class="field">
+          <label>メモ</label>
+          <input id="fMemo" placeholder="例: 実家用に常備 / 風呂上がり専用" maxlength="60">
+        </div>
+      </div>
+    </details>
+    <div class="sheetbtns">
+      <button class="btn-cancel" onclick="closeSheet()">キャンセル</button>
+      <button class="btn-save" onclick="saveItem()">保存する</button>
+    </div>
+    <button class="btn-del" id="btnDel" style="display:none" onclick="deleteItem()">この銘柄を削除</button>
+  </div>
+</div>
+
+<div class="undobar" id="undobar">
+  <span id="undomsg"></span>
+  <button onclick="doUndo()">元に戻す</button>
+</div>
+
+<div class="overlay" id="qtyOverlay" onclick="if(event.target===this)closeQty()">
+  <div class="sheet">
+    <h2>何本買った？</h2>
+    <div class="qtyname" id="qtyName"></div>
+    <div class="qtychips" id="qtyChips"></div>
+    <div class="field">
+      <label>本数（自由入力）</label>
+      <input id="qtyInput" type="number" inputmode="numeric" min="1" max="999" value="6" oninput="renderQtyChips(parseInt(this.value)||0)">
+    </div>
+    <div class="sheetbtns">
+      <button class="btn-cancel" onclick="closeQty()">キャンセル</button>
+      <button class="btn-save" onclick="confirmQty()">在庫に追加する</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   ▼▼ アフィリエイト設定（ここにあなたのIDを入れてください） ▼▼
+   amazonTag: Amazonアソシエイトのトラッキング ID（例: "kkpwebninja-22"）
+   rakutenAfl: 楽天アフィリエイトID（例: "1a2b3c4d.5e6f7g8h"）
+   空文字のままでも通常の検索リンクとして動作します。
+================================================================ */
+const AFFILIATE = {
+  amazonTag: "kkp15-22",        // ★仮ID。Amazonアソシエイト取得後に本物へ差し替え
+  rakutenAfl: "11008fdf.72a391c0.11008fe0.307a7b09"     // ★仮ID。楽天アフィリエイト取得後に本物へ差し替え
+};
+
+/* ================================================================
+   ▼▼ 読みもの設定 ▼▼
+   在庫が足りているとき、買い物リストに表示される記事リンク。
+   cats に関連カテゴリを書くと、そのお酒を登録している人に優先表示
+   されます。cats:[] は全員に表示。空配列 ARTICLES=[] で機能オフ。
+================================================================ */
+const ARTICLES = [];  // blog記事ができたら戻す（元データはgit履歴参照）
+function pickArticles(){
+  const myCats = new Set(items.map(i=>i.cat));
+  const matched = ARTICLES.filter(a => a.cats.length && a.cats.some(c=>myCats.has(c)));
+  const general = ARTICLES.filter(a => !a.cats.length);
+  const rest = ARTICLES.filter(a => a.cats.length && !a.cats.some(c=>myCats.has(c)));
+  return [...matched, ...general, ...rest].slice(0, 4);
+}
+
+/* ================================================================
+   ▼▼ おすすめ商品設定（アフィリエイト・パーソナライズ） ▼▼
+   在庫のカテゴリに合わせて「あなたにおすすめ」として表示されます。
+   kw はAmazon/楽天の検索キーワード。売りたい商品に合わせて編集OK。
+================================================================ */
+const RECS = [
+  {e:"🍺", label:"クラフトビール 飲み比べセット", kw:"クラフトビール 飲み比べ セット", cats:["ビール"]},
+  {e:"🥶", label:"缶が一気に冷える 急速冷却グッズ", kw:"缶ビール 急速 冷却", cats:["ビール","缶チューハイ","ハイボール"]},
+  {e:"🍋", label:"レモンサワーの素（家で作る派に）", kw:"レモンサワーの素", cats:["缶チューハイ"]},
+  {e:"🥃", label:"ウイスキーが化ける ロックグラス", kw:"ロックグラス ウイスキー", cats:["ウイスキー"]},
+  {e:"🍶", label:"日本酒 飲み比べ 300mlセット", kw:"日本酒 飲み比べ セット 300ml", cats:["日本酒"]},
+  {e:"🍷", label:"ワインの残りを守る バキュームストッパー", kw:"ワイン ストッパー 真空", cats:["ワイン"]},
+  {e:"🫗", label:"前割りが捗る 焼酎サーバー", kw:"焼酎サーバー", cats:["焼酎"]},
+  {e:"🧊", label:"溶けにくい 丸氷メーカー", kw:"丸氷 製氷器", cats:["ウイスキー","焼酎","ハイボール"]},
+];
+function pickRecs(){
+  // 在庫本数が多いカテゴリ＝よく飲むカテゴリとして優先
+  const catCount = {};
+  items.forEach(i => catCount[i.cat] = (catCount[i.cat]||0) + i.count);
+  const scored = RECS.map(r => ({
+    r, score: r.cats.reduce((s,c)=> s + (catCount[c]||0), 0)
+  })).filter(x => x.score > 0);
+  scored.sort((a,b)=> b.score - a.score);
+  return scored.slice(0, 3).map(x=>x.r);
+}
+
+function amazonURL(name){
+  const base = "https://www.amazon.co.jp/s?k=" + encodeURIComponent(name);
+  return AFFILIATE.amazonTag ? base + "&tag=" + encodeURIComponent(AFFILIATE.amazonTag) : base;
+}
+function rakutenURL(name){
+  const search = "https://search.rakuten.co.jp/search/mall/" + encodeURIComponent(name) + "/";
+  if(!AFFILIATE.rakutenAfl) return search;
+  return "https://hb.afl.rakuten.co.jp/hgc/" + AFFILIATE.rakutenAfl + "/?pc=" + encodeURIComponent(search) + "&m=" + encodeURIComponent(search);
+}
+
+const CATS = [
+  {name:"ビール", e:"🍺"},
+  {name:"缶チューハイ", e:"🍋"},
+  {name:"日本酒", e:"🍶"},
+  {name:"ワイン", e:"🍷"},
+  {name:"ウイスキー", e:"🥃"},
+  {name:"焼酎", e:"🫗"},
+  {name:"ハイボール", e:"🥂"},
+  {name:"その他", e:"🍸"},
+];
+const KEY = "aruaru_items_v1";
+const KEY_GUIDE = "aruaru_guide_done";
+let items = load();
+let filter = "すべて";
+let editingId = null;
+let selCat = "ビール";
+
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)) || []; }catch(e){ return []; } }
+function persist(){ try{ localStorage.setItem(KEY, JSON.stringify(items)); }catch(e){} }
+function guideDone(){ try{ return localStorage.getItem(KEY_GUIDE)==="1"; }catch(e){ return false; } }
+function setGuideDone(){ try{ localStorage.setItem(KEY_GUIDE,"1"); }catch(e){} }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function catEmoji(name){ const c = CATS.find(c=>c.name===name); return c ? c.e : "🍸"; }
+function esc(s){ return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function lowItems(){ return items.filter(i => i.count <= i.threshold); }
+function fullOf(i){ return i.target != null ? Math.max(i.target, 1) : Math.max(i.threshold * 3, i.count, 1); }
+function suggestOf(i){ return Math.max(fullOf(i) - i.count, 1); }
+
+const SAMPLE_NAMES = ["アサヒ スーパードライ 350ml","キリン 本麒麟 350ml","檸檬堂 定番レモン 350ml","ほろよい 白いサワー 350ml","サントリー 角瓶 700ml","久保田 千寿 720ml","いいちこ 25度 900ml"];
+function loadSample(){
+  items = [
+    {id:uid(), name:"アサヒ スーパードライ 350ml", cat:"ビール", count:12, threshold:6, sample:1},
+    {id:uid(), name:"キリン 本麒麟 350ml", cat:"ビール", count:4, threshold:6, sample:1},
+    {id:uid(), name:"檸檬堂 定番レモン 350ml", cat:"缶チューハイ", count:9, threshold:4, sample:1},
+    {id:uid(), name:"ほろよい 白いサワー 350ml", cat:"缶チューハイ", count:2, threshold:4, sample:1},
+    {id:uid(), name:"サントリー 角瓶 700ml", cat:"ウイスキー", count:1, threshold:1, sample:1},
+    {id:uid(), name:"久保田 千寿 720ml", cat:"日本酒", count:2, threshold:1, sample:1},
+    {id:uid(), name:"いいちこ 25度 900ml", cat:"焼酎", count:1, threshold:0, sample:1},
+  ];
+  setGuideDone(); persist(); render();
+}
+function isSample(i){ return i.sample === 1 || SAMPLE_NAMES.includes(i.name); }
+function clearSample(){
+  const removed = [];
+  items.forEach((i, idx)=>{ if(isSample(i)) removed.push({item:i, idx}); });
+  if(!removed.length) return;
+  items = items.filter(i => !isSample(i));
+  persist(); render();
+  showUndo(`サンプル${removed.length}件を削除しました`, removed);
+}
+
+function render(){
+  document.getElementById("sumTotal").textContent = items.reduce((s,i)=>s+i.count,0);
+  document.getElementById("sumKinds").textContent = items.length;
+  const lows = lowItems();
+  const sumLow = document.getElementById("sumLow");
+  sumLow.textContent = lows.length;
+  sumLow.classList.toggle("alert", lows.length > 0);
+  const badge = document.getElementById("shopBadge");
+  badge.style.display = lows.length ? "inline-block" : "none";
+  badge.textContent = lows.length;
+
+  // 在庫総額（価格を設定した銘柄がある場合のみ表示）
+  const priced = items.filter(i => i.price != null);
+  const tv = document.getElementById("totalValue");
+  if(priced.length){
+    const total = priced.reduce((s,i)=> s + i.price * i.count, 0);
+    tv.innerHTML = `💰 在庫総額 <b>¥${Math.round(total).toLocaleString()}</b>${priced.length < items.length ? "（価格設定済みの銘柄のみ）" : ""}`;
+    tv.style.display = "block";
+  } else { tv.style.display = "none"; }
+
+  const g = document.getElementById("guideArea");
+  const hasSample = items.some(isSample);
+  if(!items.length && !guideDone()){
+    g.innerHTML = `
+    <div class="guide">
+      <h2>つかいかたは、これだけ。</h2>
+      <div class="gsteps">
+        <div class="gstep"><div class="gicon">📝</div><div class="gtxt"><b>① 登録</b>　家にあるお酒と本数を入れる</div></div>
+        <div class="gstep"><div class="gicon">🍺</div><div class="gtxt"><b>② 飲んだら「−」</b>　1タップで在庫が減る</div></div>
+        <div class="gstep"><div class="gicon">🛒</div><div class="gtxt"><b>③ 減ったら自動でお知らせ</b>　買い物リストからそのまま注文</div></div>
+      </div>
+      <div class="gbtns">
+        <button class="gb-sample" onclick="loadSample()">🍻 サンプルで試す</button>
+        <button class="gb-start" onclick="setGuideDone();openAdd()">📝 自分で登録する</button>
+      </div>
+    </div>`;
+  } else if(hasSample){
+    g.innerHTML = `<div class="samplebar">🍻 サンプルデータ表示中 <button onclick="clearSample()">サンプルを全部消す</button></div>`;
+  } else { g.innerHTML = ""; }
+
+  const usedCats = ["すべて", ...CATS.filter(c => items.some(i=>i.cat===c.name)).map(c=>c.name)];
+  document.getElementById("chips").innerHTML = items.length < 2 ? "" : usedCats.map(c =>
+    `<div class="chip ${filter===c?'on':''}" onclick="setFilter('${c}')">${c==="すべて"?c:catEmoji(c)+" "+c}</div>`).join("");
+
+  const listEl = document.getElementById("list");
+  const shown = items.filter(i => filter==="すべて" || i.cat===filter); // 登録順のまま（操作中に並びが変わらない）
+  if(!items.length){
+    listEl.innerHTML = "";
+  } else if(!shown.length){
+    listEl.innerHTML = `<div class="empty">このカテゴリの在庫はありません。</div>`;
+  } else {
+    listEl.innerHTML = shown.map(i=>{
+      const low = i.count <= i.threshold;
+      const pct = Math.round(Math.max(0, Math.min(1, i.count / fullOf(i))) * 100);
+      const extras = [i.cat, i.vol!=null?i.vol+"ml":null, i.abv!=null?i.abv+"%":null].filter(Boolean).join(" ・ ");
+      const memoLine = i.memo ? `<div class="memoline">📌 ${esc(i.memo)}</div>` : "";
+      return `<div class="item ${low?'low':''}">
+        ${low?'<div class="lowtag">⚠ 買い足し</div>':''}
+        <div class="bemoji">${catEmoji(i.cat)}</div>
+        <div class="iteminfo" onclick="openEdit('${i.id}')">
+          <div class="name">${esc(i.name)}</div>
+          <div class="meta">${extras}<button class="editbtn" onclick="event.stopPropagation();openEdit('${i.id}')">✎ 編集・削除</button></div>
+          ${memoLine}
+          <div class="gauge"><i style="width:${pct}%"></i></div>
+        </div>
+        <div class="actions">
+          <div class="actrow">
+            <button class="act" aria-label="飲んだ（1本減らす）" onclick="bump('${i.id}',-1)"><span class="sym">−</span><span class="word">飲んだ</span></button>
+            <div class="count">${i.count}<small>本</small></div>
+            <button class="act" aria-label="買った（1本増やす）" onclick="bump('${i.id}',1)"><span class="sym">＋</span><span class="word">買った</span></button>
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  const shopEl = document.getElementById("shopList");
+  document.getElementById("disclosure").style.display = lows.length ? "block" : "none";
+  if(!lows.length){
+    const picked = pickArticles();
+    const recs = pickRecs();
+    const recHtml = recs.length ? `
+      <div class="readhead" style="margin-top:18px">🛍 あなたにおすすめ</div>
+      <div class="readlist">${recs.map(r=>`
+        <a class="readcard" href="${amazonURL(r.kw)}" target="_blank" rel="noopener sponsored">
+          <span class="re">${r.e}</span>
+          <span class="rt">${esc(r.label)}</span>
+          <span class="ra">›</span>
+        </a>`).join("")}
+      </div>` : "";
+    const arts = picked.length ? `
+      <div class="readhead">🍶 あなたのお酒の読みもの</div>
+      <div class="readlist">${picked.map(a=>`
+        <a class="readcard" href="${a.url}" target="_blank" rel="noopener">
+          <span class="re">${a.e}</span>
+          <span class="rt">${esc(a.title)}</span>
+          <span class="ra">›</span>
+        </a>`).join("")}
+      </div>` : "";
+    shopEl.innerHTML = `<div class="empty" style="padding-bottom:24px"><div class="big">🎉</div>買い足しが必要なお酒はありません。<br>在庫はバッチリです！</div>${arts}${recHtml}`;
+    document.getElementById("disclosure").style.display = recs.length ? "block" : "none";
+  } else {
+    shopEl.innerHTML = lows.map(i=>{
+      const suggest = suggestOf(i);
+      return `<div class="shopitem">
+        <div class="shoptop">
+          <div class="bemoji">${catEmoji(i.cat)}</div>
+          <div style="flex:1;min-width:0">
+            <div class="name">${esc(i.name)}</div>
+            <div class="need">残り${i.count}本 → あと${suggest}本で安心</div>
+          </div>
+        </div>
+        <div class="shopbtns">
+          <a class="buy-amazon" href="${amazonURL(i.name)}" target="_blank" rel="noopener sponsored">🛍 Amazonで買う</a>
+          <a class="buy-rakuten" href="${rakutenURL(i.name)}" target="_blank" rel="noopener sponsored">🅁 楽天で探す</a>
+          <button class="bought" onclick="openQty('${i.id}',${suggest})">✓ 買った</button>
+        </div>
+      </div>`;
+    }).join("");
+  }
+}
+
+function setFilter(c){ filter = c; render(); }
+function setTab(t){
+  document.getElementById("tabStock").classList.toggle("on", t==="stock");
+  document.getElementById("tabShop").classList.toggle("on", t==="shop");
+  document.getElementById("viewStock").style.display = t==="stock" ? "" : "none";
+  document.getElementById("viewShop").style.display = t==="shop" ? "" : "none";
+  document.getElementById("fabWrap").style.display = t==="stock" ? "" : "none";
+}
+function bump(id, d){
+  const i = items.find(x=>x.id===id); if(!i) return;
+  i.count = Math.max(0, Math.min(999, i.count + d));
+  persist(); render();
+}
+function restock(id, n){
+  const i = items.find(x=>x.id===id); if(!i) return;
+  i.count = Math.min(999, i.count + n);
+  persist(); render();
+}
+
+/* ---- 本数選択シート ---- */
+let qtyTarget = null;
+function openQty(id, suggest){
+  const i = items.find(x=>x.id===id); if(!i) return;
+  qtyTarget = id;
+  document.getElementById("qtyName").textContent = i.name;
+  document.getElementById("qtyInput").value = suggest;
+  renderQtyChips(suggest);
+  document.getElementById("qtyOverlay").classList.add("show");
+}
+function renderQtyChips(sel){
+  const presets = [1,3,6,12,24];
+  document.getElementById("qtyChips").innerHTML = presets.map(n=>
+    `<button class="qtychip ${n===sel?'on':''}" onclick="pickQty(${n})">${n}本</button>`).join("");
+}
+function pickQty(n){
+  document.getElementById("qtyInput").value = n;
+  renderQtyChips(n);
+}
+function confirmQty(){
+  const n = Math.max(1, Math.min(999, parseInt(document.getElementById("qtyInput").value) || 1));
+  restock(qtyTarget, n);
+  closeQty();
+}
+function closeQty(){
+  document.getElementById("qtyOverlay").classList.remove("show");
+  qtyTarget = null;
+}
+
+const CAT_PLACEHOLDER = {
+  "ビール":"例：スーパードライ 350ml",
+  "缶チューハイ":"例：檸檬堂 定番レモン",
+  "日本酒":"例：久保田 千寿 720ml",
+  "ワイン":"例：チリカベ 750ml",
+  "ウイスキー":"例：角瓶 700ml",
+  "焼酎":"例：いいちこ 25度 900ml",
+  "ハイボール":"例：角ハイボール缶 350ml",
+  "その他":"例：梅酒 / ジン / スパークリング",
+};
+function defaultName(cat){
+  // 同名があれば「ビール 2」「ビール 3」と連番
+  if(!items.some(i=>i.name===cat)) return cat;
+  let n = 2;
+  while(items.some(i=>i.name===`${cat} ${n}`)) n++;
+  return `${cat} ${n}`;
+}
+function renderCatGrid(){
+  document.getElementById("catGrid").innerHTML = CATS.map(c=>
+    `<button class="catbtn ${selCat===c.name?'on':''}" onclick="selCat='${c.name}';renderCatGrid()"><span class="ce">${c.e}</span>${c.name}</button>`).join("");
+  const nameEl = document.getElementById("fName");
+  nameEl.placeholder = (CAT_PLACEHOLDER[selCat] || "銘柄名") + "（空欄でもOK）";
+}
+function fillAdv(i){
+  const set = (id,v) => document.getElementById(id).value = (v==null ? "" : v);
+  set("fTarget", i && i.target); set("fPrice", i && i.price);
+  set("fVol", i && i.vol); set("fAbv", i && i.abv); set("fMemo", i && i.memo);
+  const hasAdv = i && (i.target!=null||i.price!=null||i.vol!=null||i.abv!=null||i.memo);
+  document.getElementById("advBox").open = !!hasAdv;
+}
+function openAdd(){
+  editingId = null; selCat = "ビール";
+  document.getElementById("sheetTitle").textContent = "お酒を登録";
+  document.getElementById("fName").value = "";
+  document.getElementById("fCount").value = 6;
+  document.getElementById("fThreshold").value = 2;
+  document.getElementById("btnDel").style.display = "none";
+  fillAdv(null);
+  renderCatGrid();
+  document.getElementById("overlay").classList.add("show");
+}
+function openEdit(id){
+  const i = items.find(x=>x.id===id); if(!i) return;
+  editingId = id; selCat = i.cat;
+  document.getElementById("sheetTitle").textContent = "編集";
+  document.getElementById("fName").value = i.name;
+  document.getElementById("fCount").value = i.count;
+  document.getElementById("fThreshold").value = i.threshold < 0 ? "" : i.threshold;
+  document.getElementById("btnDel").style.display = "block";
+  fillAdv(i);
+  renderCatGrid();
+  document.getElementById("overlay").classList.add("show");
+}
+function closeSheet(){
+  document.getElementById("overlay").classList.remove("show");
+}
+function saveItem(){
+  const nameEl = document.getElementById("fName");
+  let name = nameEl.value.trim();
+  if(!name){
+    name = defaultName(selCat);   // 空欄ならカテゴリ名で仮登録（例:「ビール」「ビール 2」）
+  }
+  const count = Math.max(0, Math.min(999, parseInt(document.getElementById("fCount").value) || 0));
+  const thRaw = document.getElementById("fThreshold").value.trim();
+  const threshold = thRaw === "" ? -1 : Math.max(0, Math.min(99, parseInt(thRaw) || 0));
+  const num = (id, max) => {
+    const v = document.getElementById(id).value.trim();
+    if(v === "") return null;
+    const n = parseFloat(v);
+    return isNaN(n) ? null : Math.max(0, Math.min(max, n));
+  };
+  const target = num("fTarget", 999);
+  const price = num("fPrice", 999999);
+  const vol = num("fVol", 99999);
+  const abv = num("fAbv", 99);
+  const memo = document.getElementById("fMemo").value.trim() || null;
+  const data = {name, cat:selCat, count, threshold, target, price, vol, abv, memo};
+  if(editingId){
+    const i = items.find(x=>x.id===editingId);
+    Object.assign(i, data);
+  } else {
+    items.push({id: uid(), ...data});
+  }
+  setGuideDone(); persist(); closeSheet(); render();
+}
+/* ---- 削除（即実行＋元に戻す） ---- */
+let undoData = null;
+let undoTimer = null;
+function deleteItem(){
+  if(!editingId) return;
+  const idx = items.findIndex(x=>x.id===editingId);
+  if(idx < 0) return;
+  const removed = items[idx];
+  items.splice(idx, 1);
+  persist(); closeSheet(); render();
+  showUndo(`「${removed.name}」を削除しました`, [{item:removed, idx}]);
+}
+function showUndo(msg, restoreList){
+  undoData = restoreList;
+  clearTimeout(undoTimer);
+  const bar = document.getElementById("undobar");
+  document.getElementById("undomsg").textContent = msg;
+  bar.classList.add("show");
+  undoTimer = setTimeout(hideUndo, 6000);
+}
+function doUndo(){
+  if(undoData){
+    // 元の位置に戻す（前から順に挿入）
+    undoData.sort((a,b)=>a.idx-b.idx).forEach(u=>{
+      items.splice(Math.min(u.idx, items.length), 0, u.item);
+    });
+    persist(); render();
+  }
+  hideUndo();
+}
+function hideUndo(){
+  undoData = null;
+  clearTimeout(undoTimer);
+  document.getElementById("undobar").classList.remove("show");
+}
+
+render();
+</script>
+
+<!-- WEBNINJA_UNIFIED_FOOTER -->
+<footer style="text-align:center;padding:2rem 1rem 2.5rem;font-size:0.78rem;color:#94a3b8;line-height:2;border-top:1px solid #f0e6d2;margin-top:2.5rem;background:#fffcf7;">
+  <div style="font-weight:800;color:#8b6b3d;font-size:0.85rem;margin-bottom:0.4rem;">web忍者の砦</div>
+  <div>
+    <a href="https://kkpwebninja.com/" target="_blank" rel="noopener" style="color:#8b6b3d;text-decoration:none;margin:0 0.5rem;">本丸トップ</a>·
+    <a href="https://privacypolicy.kkpwebninja.com/" target="_blank" rel="noopener" style="color:#8b6b3d;text-decoration:none;margin:0 0.5rem;">プライバシーポリシー</a>·
+    <a href="https://kkpwebninja.com/otoiawase" target="_blank" rel="noopener" style="color:#8b6b3d;text-decoration:none;margin:0 0.5rem;">お問い合わせ</a>·
+    <a href="https://x.com/kkp_webninja" target="_blank" rel="noopener" style="color:#8b6b3d;text-decoration:none;margin:0 0.5rem;">@kkp_webninja</a>
+  </div>
+  <div style="margin-top:0.5rem;color:#bfa97a;">© 2025-2026 web忍者の砦</div>
+</footer>
+</body>
+</html>
