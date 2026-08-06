@@ -271,6 +271,7 @@ header{padding:20px 0 4px;text-align:center}
 .shopitem .name{font-weight:700;color:var(--ink)}
 .shopitem .need{font-size:.78rem;color:var(--amber-deep);margin-top:2px}
 .shopbtns{display:flex;gap:8px;margin-top:12px}
+.shopbtns>*{white-space:nowrap}
 .shopbtns a,.shopbtns button{
   flex:1;height:42px;border-radius:11px;font-weight:700;font-size:.8rem;cursor:pointer;
   font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;
@@ -365,6 +366,18 @@ header{padding:20px 0 4px;text-align:center}
 .totalvalue{font-size:.72rem;color:var(--sub);text-align:center;margin:-6px 0 10px}
 .totalvalue b{color:var(--ink)}
 .disclosure{font-size:.65rem;color:var(--sub);text-align:center;margin-top:14px;line-height:1.6}
+
+/* おすすめ商品（Amazon/楽天を見比べて買える形） */
+.reclist{display:flex;flex-direction:column;gap:8px}
+.reccard{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);
+  border-radius:14px;padding:10px 12px}
+.reccard .re{font-size:1.5rem;flex:0 0 auto}
+.reccard .rt{flex:1 1 auto;min-width:0;font-size:.86rem;line-height:1.45;color:var(--ink)}
+.reccard .rbtns{flex:0 0 auto;display:flex;gap:6px}
+.reccard .rbtns a{font-size:.72rem;font-weight:800;text-decoration:none;border-radius:999px;padding:6px 11px}
+.reccard .rbtns a:first-child{color:#d97e04;background:var(--amber-soft)}
+.reccard .rbtns a:last-child{color:#bf0000;background:#fdeced}
+.agenote{font-size:.72rem;color:var(--sub);text-align:center;margin-top:12px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -405,6 +418,7 @@ header{padding:20px 0 4px;text-align:center}
     <div class="shophint">在庫が「買い足しライン」を下回ると、ここに自動で並びます。<br>そのままネットで注文もできます。</div>
     <div class="list" id="shopList"></div>
     <div class="disclosure" id="disclosure" style="display:none">※ 商品リンクにはアフィリエイト広告を含みます</div>
+    <div class="agenote">20歳未満の飲酒は法律で禁止されています。飲酒運転は絶対にやめましょう。</div>
   </div>
 </div>
 
@@ -686,15 +700,7 @@ function render(){
   if(!lows.length){
     const picked = pickArticles();
     const recs = pickRecs();
-    const recHtml = recs.length ? `
-      <div class="readhead" style="margin-top:18px">🛍 あなたにおすすめ</div>
-      <div class="readlist">${recs.map(r=>`
-        <a class="readcard" href="${amazonURL(r.kw)}" target="_blank" rel="noopener sponsored">
-          <span class="re">${r.e}</span>
-          <span class="rt">${esc(r.label)}</span>
-          <span class="ra">›</span>
-        </a>`).join("")}
-      </div>` : "";
+    const recHtml = recsHTML("あなたにおすすめ");
     const arts = picked.length ? `
       <div class="readhead">🍶 あなたのお酒の読みもの</div>
       <div class="readlist">${picked.map(a=>`
@@ -707,7 +713,7 @@ function render(){
     shopEl.innerHTML = `<div class="empty" style="padding-bottom:24px"><div class="big">🎉</div>買い足しが必要なお酒はありません。<br>在庫はバッチリです！</div>${arts}${recHtml}`;
     document.getElementById("disclosure").style.display = recs.length ? "block" : "none";
   } else {
-    shopEl.innerHTML = lows.map(i=>{
+    const lowsHtml = lows.map(i=>{
       const suggest = suggestOf(i);
       return `<div class="shopitem">
         <div class="shoptop">
@@ -718,13 +724,34 @@ function render(){
           </div>
         </div>
         <div class="shopbtns">
-          <a class="buy-amazon" href="${amazonURL(i.name)}" target="_blank" rel="noopener sponsored">🛍 Amazonで買う</a>
-          <a class="buy-rakuten" href="${rakutenURL(i.name)}" target="_blank" rel="noopener sponsored">🅁 楽天で探す</a>
+          <a class="buy-amazon" href="${amazonURL(i.name)}" target="_blank" rel="noopener sponsored">🛍 Amazon</a>
+          <a class="buy-rakuten" href="${rakutenURL(i.name)}" target="_blank" rel="noopener sponsored">🅁 楽天</a>
           <button class="bought" onclick="openQty('${i.id}',${suggest})">✓ 買った</button>
         </div>
       </div>`;
     }).join("");
+    shopEl.innerHTML = lowsHtml + recsHTML("ついでに、いかがですか");
   }
+}
+
+
+// おすすめ商品ブロック（買い物リストの有無にかかわらず出す）。
+// Amazon/楽天を併記して価格を見比べられるようにする。在庫タブ（使用中）には出さない。
+function recsHTML(headline){
+  const recs = pickRecs();
+  if(!recs.length) return "";
+  return `
+      <div class="readhead" style="margin-top:18px">🛍 ${headline}</div>
+      <div class="reclist">${recs.map(r=>`
+        <div class="reccard">
+          <span class="re">${r.e}</span>
+          <span class="rt">${esc(r.label)}</span>
+          <span class="rbtns">
+            <a href="${amazonURL(r.kw)}" target="_blank" rel="noopener nofollow sponsored">Amazon</a>
+            <a href="${rakutenURL(r.kw)}" target="_blank" rel="noopener nofollow sponsored">楽天</a>
+          </span>
+        </div>`).join("")}
+      </div>`;
 }
 
 function setFilter(c){ filter = c; render(); }
