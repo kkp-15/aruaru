@@ -567,7 +567,7 @@ function amazonURL(name){
 function rakutenURL(name){
   const search = "https://search.rakuten.co.jp/search/mall/" + encodeURIComponent(name) + "/";
   if(!AFFILIATE.rakutenAfl) return search;
-  return "https://hb.afl.rakuten.co.jp/hgc/" + AFFILIATE.rakutenAfl + "/?pc=" + encodeURIComponent(search) + "&m=" + encodeURIComponent(search);
+  return "https://hb.afl.rakuten.co.jp/hgc/" + AFFILIATE.rakutenAfl + "/_RTLink144155?pc=" + encodeURIComponent(search) + "&m=" + encodeURIComponent(search);
 }
 
 const CATS = [
