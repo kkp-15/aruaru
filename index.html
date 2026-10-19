@@ -424,6 +424,17 @@ div.guide{box-shadow:var(--k-sh-l);border-radius:var(--k-r);background:var(--k-s
 .fab{background:linear-gradient(transparent,rgba(251,243,228,.96) 40%)}
 .fab button{border-radius:0;border-style:solid;border-width:12px 16px;border-image:url(/kit/img/d3-wood.webp) 40 50 fill / 12px 16px stretch;background:none;color:#fff;text-shadow:var(--k-outline);filter:drop-shadow(4px 4px 0 var(--k-sumi));box-shadow:none;font-family:var(--k-bold);font-weight:400;height:60px}
 .fab button:active{background:none;transform:translate(4px,4px);filter:none}
+/* 2026-10-19 スマホ幅（〜420px）で銘柄名が2文字ほどの幅しか取れず切れていたのを直す。
+   絵文字の箱と ±ボタンを少し細くして名前の幅を広げ、3行まで折り返す（ボタンは44px以上を保つ） */
+@media (max-width:420px){
+  .item{gap:8px;padding:14px 10px 16px}
+  .bemoji{flex-basis:36px;height:36px;border-radius:10px;font-size:1.15rem;align-self:flex-start}
+  .iteminfo .name{-webkit-line-clamp:3;overflow-wrap:anywhere}
+  .iteminfo .meta{flex-wrap:wrap;row-gap:4px}
+  .actrow{gap:2px}
+  .act{width:44px}
+  .count{min-width:36px;font-size:1.3rem}
+}
 </style>
 </head>
 <body>
