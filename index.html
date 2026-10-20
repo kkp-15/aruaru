@@ -435,6 +435,37 @@ div.guide{box-shadow:var(--k-sh-l);border-radius:var(--k-r);background:var(--k-s
   .act{width:44px}
   .count{min-width:36px;font-size:1.3rem}
 }
+/* ===== 2026-10-20 清潔感（kkp-kit 17eac63 の方針）: 泡が上がり続けるビールの絵・数字タイル・絵文字・①②③・箱の入れ子をやめる =====
+   買い足しの赤・ゲージの色・Amazon/楽天の札と色・おすすめ欄（アフィリ）・保存（localStorage のキー）・広告・GA4・SEO は不変。 */
+.mug{display:none}
+.mug .bub{animation:none}
+.hero{justify-content:flex-start}
+/* 集計: 3つの数字タイル → 1本の罫線の行（数字は墨の太字） */
+.summary{gap:0;margin:12px 0;border-top:var(--k-bw-s) solid var(--k-sumi);border-bottom:1px solid var(--k-line-soft)}
+.sumbox,div.sumbox{display:flex;align-items:baseline;justify-content:center;gap:6px;flex:1;padding:8px 4px;border:0;border-radius:0;box-shadow:none;background:none}
+.sumbox+.sumbox{border-left:1px solid var(--k-line-soft)}
+.sumbox .lbl{order:-1;font-size:13px;color:var(--k-text-2);margin:0}
+/* 使い方: 絵文字の丸いタイル＋①②③ → 墨の太字の番号と罫線（k-steps の形） */
+div.guide{box-shadow:none;border-width:var(--k-bw-s);background:var(--k-surface)}
+.guide h2{text-align:left}
+.gsteps{gap:0}
+.gstep{padding:8px 0;border-bottom:1px solid var(--k-line-soft)}
+.gstep:last-child{border-bottom:0}
+.gstep .gicon{flex:0 0 22px;width:22px;height:auto;background:none;border-radius:0;font-family:var(--k-bold);font-size:18px;color:var(--k-sumi);justify-content:flex-start}
+.gstep .gtxt b{color:var(--k-sumi)}
+/* 種類の印: 絵文字 → 頭の1字の小さな札 */
+.bemoji{background:var(--k-kinari);border:1px solid var(--k-line-soft);border-radius:var(--k-r);font-family:var(--k-bold);font-size:16px;color:var(--k-sumi)}
+.item{box-shadow:none}
+/* こんなときに・よくある質問: 白い箱の並び → 罫線（k-fold の形） */
+.about h2{text-align:left}
+.scene .sc,div.sc{background:none;border:0;border-top:1px solid var(--k-line-soft);border-radius:0;padding:12px 2px;box-shadow:none}
+.scene .sc b{color:var(--k-sumi)}
+.faq details{background:none;border:0;border-top:1px solid var(--k-line-soft);border-radius:0;margin:0}
+.faq details:last-child{border-bottom:1px solid var(--k-line-soft)}
+.faq summary{min-height:48px;box-sizing:border-box;display:flex;align-items:center;padding:10px 40px 10px 2px}
+.faq summary::after{content:"＋";display:grid;place-items:center;width:26px;height:26px;border:var(--k-bw-s) solid var(--k-sumi);border-radius:4px;color:var(--k-sumi);font-size:15px;right:2px}
+.faq details[open] summary::after{content:"−"}
+.faq .a{padding:0 2px 14px;color:var(--k-text-2)}
 </style>
 <!-- kkp-rel-d4:start -->
 <style id="kkp-rel-d4">
@@ -468,15 +499,15 @@ div.guide{box-shadow:var(--k-sh-l);border-radius:var(--k-r);background:var(--k-s
   </header>
 
   <div class="summary">
-    <div class="sumbox"><div class="num" id="sumTotal">0</div><div class="lbl">🍺 いま飲める</div></div>
-    <div class="sumbox"><div class="num" id="sumKinds">0</div><div class="lbl">🍾 銘柄</div></div>
-    <div class="sumbox"><div class="num" id="sumLow">0</div><div class="lbl">🥂 買い足し</div></div>
+    <div class="sumbox"><div class="num" id="sumTotal">0</div><div class="lbl">いま飲める</div></div>
+    <div class="sumbox"><div class="num" id="sumKinds">0</div><div class="lbl">銘柄</div></div>
+    <div class="sumbox"><div class="num" id="sumLow">0</div><div class="lbl">買い足し</div></div>
   </div>
   <div class="totalvalue" id="totalValue" style="display:none"></div>
 
   <div class="tabs">
-    <div class="tab on" id="tabStock" onclick="setTab('stock')">🍺 在庫</div>
-    <div class="tab" id="tabShop" onclick="setTab('shop')">🛒 買い物リスト<span class="badge" id="shopBadge" style="display:none">0</span></div>
+    <div class="tab on" id="tabStock" onclick="setTab('stock')">在庫</div>
+    <div class="tab" id="tabShop" onclick="setTab('shop')">買い物リスト<span class="badge" id="shopBadge" style="display:none">0</span></div>
   </div>
 
   <div id="viewStock">
@@ -514,7 +545,7 @@ div.guide{box-shadow:var(--k-sh-l);border-radius:var(--k-r);background:var(--k-s
       <div class="field">
         <label>買い足しライン</label>
         <input id="fThreshold" type="number" inputmode="numeric" min="0" max="99" value="2">
-        <div class="hint">この本数以下で🛒買い物リスト行き。0＝なくなったら通知 ／ 空欄＝通知しない</div>
+        <div class="hint">この本数以下で買い物リスト行き。0＝なくなったら通知 ／ 空欄＝通知しない</div>
       </div>
     </div>
     <details class="adv" id="advBox">
@@ -661,7 +692,7 @@ function persist(){ try{ localStorage.setItem(KEY, JSON.stringify(items)); }catc
 function guideDone(){ try{ return localStorage.getItem(KEY_GUIDE)==="1"; }catch(e){ return false; } }
 function setGuideDone(){ try{ localStorage.setItem(KEY_GUIDE,"1"); }catch(e){} }
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
-function catEmoji(name){ const c = CATS.find(c=>c.name===name); return c ? c.e : "🍸"; }
+function catEmoji(name){ /* 2026-10-20 絵文字をやめて種類の頭の1字の札に */ return name && name !== "その他" ? name.charAt(0) : "他"; }
 function esc(s){ return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 function lowItems(){ return items.filter(i => i.count <= i.threshold); }
 function fullOf(i){ return i.target != null ? Math.max(i.target, 1) : Math.max(i.threshold * 3, i.count, 1); }
@@ -706,7 +737,7 @@ function render(){
   const tv = document.getElementById("totalValue");
   if(priced.length){
     const total = priced.reduce((s,i)=> s + i.price * i.count, 0);
-    tv.innerHTML = `💰 在庫総額 <b>¥${Math.round(total).toLocaleString()}</b>${priced.length < items.length ? "（価格設定済みの銘柄のみ）" : ""}`;
+    tv.innerHTML = `在庫総額 <b>¥${Math.round(total).toLocaleString()}</b>${priced.length < items.length ? "（価格設定済みの銘柄のみ）" : ""}`;
     tv.style.display = "block";
   } else { tv.style.display = "none"; }
 
@@ -717,22 +748,22 @@ function render(){
     <div class="guide">
       <h2>つかいかたは、これだけ。</h2>
       <div class="gsteps">
-        <div class="gstep"><div class="gicon">📝</div><div class="gtxt"><b>① 登録</b>　家にあるお酒と本数を入れる</div></div>
-        <div class="gstep"><div class="gicon">🍺</div><div class="gtxt"><b>② 飲んだら「−」</b>　1タップで在庫が減る</div></div>
-        <div class="gstep"><div class="gicon">🛒</div><div class="gtxt"><b>③ 減ったら自動でお知らせ</b>　買い物リストからそのまま注文</div></div>
+        <div class="gstep"><div class="gicon">1</div><div class="gtxt"><b>登録</b>　家にあるお酒と本数を入れる</div></div>
+        <div class="gstep"><div class="gicon">2</div><div class="gtxt"><b>飲んだら「−」</b>　1タップで在庫が減る</div></div>
+        <div class="gstep"><div class="gicon">3</div><div class="gtxt"><b>減ったら自動でお知らせ</b>　買い物リストからそのまま注文</div></div>
       </div>
       <div class="gbtns">
-        <button class="gb-sample" onclick="loadSample()">🍻 サンプルで試す</button>
-        <button class="gb-start" onclick="setGuideDone();openAdd()">📝 自分で登録する</button>
+        <button class="gb-sample" onclick="loadSample()">サンプルで試す</button>
+        <button class="gb-start" onclick="setGuideDone();openAdd()">自分で登録する</button>
       </div>
     </div>`;
   } else if(hasSample){
-    g.innerHTML = `<div class="samplebar">🍻 サンプルデータ表示中 <button onclick="clearSample()">サンプルを全部消す</button></div>`;
+    g.innerHTML = `<div class="samplebar">サンプルデータ表示中 <button onclick="clearSample()">サンプルを全部消す</button></div>`;
   } else { g.innerHTML = ""; }
 
   const usedCats = ["すべて", ...CATS.filter(c => items.some(i=>i.cat===c.name)).map(c=>c.name)];
   document.getElementById("chips").innerHTML = items.length < 2 ? "" : usedCats.map(c =>
-    `<div class="chip ${filter===c?'on':''}" onclick="setFilter('${c}')">${c==="すべて"?c:catEmoji(c)+" "+c}</div>`).join("");
+    `<div class="chip ${filter===c?'on':''}" onclick="setFilter('${c}')">${c}</div>`).join("");
 
   const listEl = document.getElementById("list");
   const shown = items.filter(i => filter==="すべて" || i.cat===filter); // 登録順のまま（操作中に並びが変わらない）
@@ -745,9 +776,9 @@ function render(){
       const low = i.count <= i.threshold;
       const pct = Math.round(Math.max(0, Math.min(1, i.count / fullOf(i))) * 100);
       const extras = [i.cat, i.vol!=null?i.vol+"ml":null, i.abv!=null?i.abv+"%":null].filter(Boolean).join(" ・ ");
-      const memoLine = i.memo ? `<div class="memoline">📌 ${esc(i.memo)}</div>` : "";
+      const memoLine = i.memo ? `<div class="memoline">メモ：${esc(i.memo)}</div>` : "";
       return `<div class="item ${low?'low':''}">
-        ${low?'<div class="lowtag">⚠ 買い足し</div>':''}
+        ${low?'<div class="lowtag">買い足し</div>':''}
         <div class="bemoji">${catEmoji(i.cat)}</div>
         <div class="iteminfo" onclick="openEdit('${i.id}')">
           <div class="name">${esc(i.name)}</div>
@@ -773,7 +804,7 @@ function render(){
     const recs = pickRecs();
     const recHtml = recsHTML("あなたにおすすめ");
     const arts = picked.length ? `
-      <div class="readhead">🍶 あなたのお酒の読みもの</div>
+      <div class="readhead">あなたのお酒の読みもの</div>
       <div class="readlist">${picked.map(a=>`
         <a class="readcard" href="${a.url}" target="_blank" rel="noopener">
           <span class="re">${a.e}</span>
@@ -781,7 +812,7 @@ function render(){
           <span class="ra">›</span>
         </a>`).join("")}
       </div>` : "";
-    shopEl.innerHTML = `<div class="empty" style="padding-bottom:24px"><div class="big">🎉</div>買い足しが必要なお酒はありません。<br>在庫はバッチリです！</div>${arts}${recHtml}`;
+    shopEl.innerHTML = `<div class="empty" style="padding-bottom:24px">買い足しが必要なお酒はありません。<br>在庫はバッチリです！</div>${arts}${recHtml}`;
     document.getElementById("disclosure").style.display = recs.length ? "block" : "none";
   } else {
     const lowsHtml = lows.map(i=>{
@@ -812,7 +843,7 @@ function recsHTML(headline){
   const recs = pickRecs();
   if(!recs.length) return "";
   return `
-      <div class="readhead" style="margin-top:18px">🛍 ${headline}</div>
+      <div class="readhead" style="margin-top:18px">${headline}</div>
       <div class="reclist">${recs.map(r=>`
         <div class="reccard">
           <span class="re">${r.e}</span>
@@ -892,7 +923,7 @@ function defaultName(cat){
 }
 function renderCatGrid(){
   document.getElementById("catGrid").innerHTML = CATS.map(c=>
-    `<button class="catbtn ${selCat===c.name?'on':''}" onclick="selCat='${c.name}';renderCatGrid()"><span class="ce">${c.e}</span>${c.name}</button>`).join("");
+    `<button class="catbtn ${selCat===c.name?'on':''}" onclick="selCat='${c.name}';renderCatGrid()">${c.name}</button>`).join("");
   const nameEl = document.getElementById("fName");
   nameEl.placeholder = (CAT_PLACEHOLDER[selCat] || "銘柄名") + "（空欄でもOK）";
 }
