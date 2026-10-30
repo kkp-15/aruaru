@@ -764,15 +764,15 @@ function render(){
   if(!items.length && !guideDone()){
     g.innerHTML = `
     <div class="guide">
-      <h2>つかいかたは、これだけ。</h2>
+      <div class="gbtns">
+        <button class="gb-sample" onclick="loadSample()">サンプルで試す</button>
+        <button class="gb-start" onclick="setGuideDone();openAdd()">自分で登録する</button>
+      </div>
+      <h2 style="margin-top:18px">つかいかたは、これだけ。</h2>
       <div class="gsteps">
         <div class="gstep"><div class="gicon">1</div><div class="gtxt"><b>登録</b>　家にあるお酒と本数を入れる</div></div>
         <div class="gstep"><div class="gicon">2</div><div class="gtxt"><b>飲んだら「−」</b>　1タップで在庫が減る</div></div>
         <div class="gstep"><div class="gicon">3</div><div class="gtxt"><b>減ったら買い物リストへ</b>　そのまま注文も</div></div>
-      </div>
-      <div class="gbtns">
-        <button class="gb-sample" onclick="loadSample()">サンプルで試す</button>
-        <button class="gb-start" onclick="setGuideDone();openAdd()">自分で登録する</button>
       </div>
     </div>`;
   } else if(hasSample){
